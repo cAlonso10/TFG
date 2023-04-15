@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "747754237830",
+    "project_id": "shaped-clarity-383819",
+    "storage_bucket": "shaped-clarity-383819.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747754237830:android:5818fa6138dc0e6d30c607",
+        "android_client_info": {
+          "package_name": "com.example.tfg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "747754237830-ajk59em8sdaf15jirjfckqskip508vmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSq8a3eerBHFDiuMqYBxsAhM1oZoMGQ8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "747754237830-ajk59em8sdaf15jirjfckqskip508vmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextInputLayoutRounded" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@color/main</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.TextInputLayout.Rounded</item>
+    </style>
+
+
+
+    <style name="ShapeAppearanceOverlay.TextInputLayout.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">160dp</item>
+    </style>
+
+
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="">
+        <item name="colorControlActivated">@color/orange</item>
+    </style>
+</resources>
