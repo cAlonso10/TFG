@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "747754237830",
-    "project_id": "shaped-clarity-383819",
-    "storage_bucket": "shaped-clarity-383819.appspot.com"
+    "project_number": "1055636647160",
+    "project_id": "restoapp-85da0",
+    "storage_bucket": "restoapp-85da0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:747754237830:android:5818fa6138dc0e6d30c607",
+        "mobilesdk_app_id": "1:1055636647160:android:24fc640758edc41eba1f0d",
         "android_client_info": {
           "package_name": "com.example.tfg"
         }
       },
       "oauth_client": [
         {
-          "client_id": "747754237830-ajk59em8sdaf15jirjfckqskip508vmm.apps.googleusercontent.com",
+          "client_id": "1055636647160-if3p4fg1khhecrhbejpvf37gjj5s4hnu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDSq8a3eerBHFDiuMqYBxsAhM1oZoMGQ8g"
+          "current_key": "AIzaSyCTt36oBQhTrXcxpVcHwRk2XVSU8czMfQY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "747754237830-7cef7rjrvfmnv7hr3shv2o6p3li9p08q.apps.googleusercontent.com",
+              "client_id": "1055636647160-if3p4fg1khhecrhbejpvf37gjj5s4hnu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

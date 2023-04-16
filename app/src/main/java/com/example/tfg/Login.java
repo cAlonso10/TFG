@@ -43,7 +43,7 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                //.requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -56,6 +56,8 @@ public class Login extends AppCompatActivity {
 
         emailText = findViewById(R.id.cajaEmail);
         passText = findViewById(R.id.cajaPass);
+        String regexEmail = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}";
+        String regexPass = "^.{6,}$";
 
         //Boton para iniciar sesión con correo y contraseña
         botonLogin = findViewById(R.id.login);
@@ -64,8 +66,7 @@ public class Login extends AppCompatActivity {
             //Iniciar sesion en Firebase
             String email = emailText.getText().toString();
             String pass = passText.getText().toString();
-            String regexEmail = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}";
-            String regexPass = "^.{6,}$";
+
 
             if(email.isEmpty()) {
                 emailText.setError("Campo vacio");
@@ -104,8 +105,12 @@ public class Login extends AppCompatActivity {
 
                 if(email.isEmpty()) {
                     emailText.setError("Campo vacio");
+                }else if(!email.matches(regexEmail)){
+                    emailText.setError("Introduce un email válido");
                 }else if(pass.isEmpty()){
                     passText.setError("Campo vacio");
+                }else if(!email.matches(regexPass)){
+                    emailText.setError("Introduce una contraseña válida");
                 } else {
                     mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
