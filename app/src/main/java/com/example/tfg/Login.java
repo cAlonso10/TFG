@@ -36,7 +36,7 @@ public class Login extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient mGoogleSignInClient;
 
-    List<String> validEmails = Arrays.asList("admin1@gmail.com");
+    List<String> emailsCocina = Arrays.asList("admin1@gmail.com");
 
 
     @Override
@@ -90,7 +90,7 @@ public class Login extends AppCompatActivity {
                             String userEmail = user.getEmail();
 
                             Intent intent;
-                            if (validEmails.contains(userEmail)) {
+                            if (emailsCocina.contains(userEmail)) {
                                 intent = new Intent(Login.this, Cocina.class);
                             } else {
                                 intent = new Intent(Login.this, MainActivity.class);
@@ -127,7 +127,16 @@ public class Login extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Toast.makeText(Login.this, "Usuario registrado", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String userEmail = user.getEmail();
+
+                                Intent intent;
+                                if (emailsCocina.contains(userEmail)) {
+                                    intent = new Intent(Login.this, Cocina.class);
+                                } else {
+                                    intent = new Intent(Login.this, MainActivity.class);
+                                }
+
                                 startActivity(intent);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -185,7 +194,7 @@ public class Login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            goMain();
+                            goNext();
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
@@ -202,14 +211,23 @@ public class Login extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         user = mAuth.getCurrentUser();
         if (user != null){
-            goMain();
+            goNext();
         }
     }
 
-    private void goMain() {
-        Intent intent = new Intent(Login.this, Cocina.class);
+    private void goNext() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userEmail = user.getEmail();
+
+        Intent intent;
+        if (emailsCocina.contains(userEmail)) {
+            intent = new Intent(Login.this, Cocina.class);
+        } else {
+            intent = new Intent(Login.this, MainActivity.class);
+        }
+
         startActivity(intent);
-        finish();
     }
 
 }
