@@ -24,6 +24,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Login extends AppCompatActivity {
 
     Button botonLogin,botonRegistro,botonGoogle;
@@ -32,6 +35,9 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient mGoogleSignInClient;
+
+    List<String> validEmails = Arrays.asList("admin1@gmail.com");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +86,16 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String userEmail = user.getEmail();
+
+                            Intent intent;
+                            if (validEmails.contains(userEmail)) {
+                                intent = new Intent(Login.this, Cocina.class);
+                            } else {
+                                intent = new Intent(Login.this, MainActivity.class);
+                            }
+
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -193,7 +207,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void goMain() {
-        Intent intent = new Intent(Login.this, MainActivity.class);
+        Intent intent = new Intent(Login.this, Cocina.class);
         startActivity(intent);
         finish();
     }
