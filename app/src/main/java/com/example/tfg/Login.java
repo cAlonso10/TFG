@@ -23,6 +23,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 import java.util.Arrays;
 import java.util.List;
@@ -108,18 +114,23 @@ public class Login extends AppCompatActivity {
 
         });
 
-        //Boton para registrarte con corre y contraseña
+        //Boton para registrarte con correo y contraseña
         botonRegistro = findViewById(R.id.registro);
         botonRegistro.setOnClickListener(view -> {
 
                 String email = emailText.getText().toString();
                 String pass = passText.getText().toString();
-
+                String regexEmail = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}";
+                String regexPass = "^.{6,}$";
 
                 if(email.isEmpty()) {
                     emailText.setError("Campo vacio");
+                }else if(!email.matches(regexEmail)){
+                    emailText.setError("Introduce un email válido");
                 }else if(pass.isEmpty()){
                     passText.setError("Campo vacio");
+                }else if(!email.matches(regexPass)){
+                    emailText.setError("Introduce una contraseña válida");
                 } else {
                     mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -205,8 +216,6 @@ public class Login extends AppCompatActivity {
                     }
                 });
     }
-
-
 
     private void updateUI(FirebaseUser user) {
         user = mAuth.getCurrentUser();
