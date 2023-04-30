@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TFG</string>
+    <string name="entrantes">Entrantes</string>
+    <string name="food_section_2_description">Bebidas</string>
+    <string name="food_section_3_description">Pizza</string>
+    <string name="food_section_4_description">Pasta</string>
+    <string name="food_section_5_description">Platos Principales</string>
+    <string name="food_section_6_description">Postres</string>
 </resources>
