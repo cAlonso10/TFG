@@ -1,9 +1,12 @@
 package com.example.tfg;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,8 +31,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -77,25 +83,49 @@ public class Cocina extends AppCompatActivity {
         listViewPedidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Obtener la información detallada del pedido seleccionado
-                Map<String, Object> pedido = mAdapterPedidos.getItem(position);
-                String producto = pedido.get("Producto").toString();
-                String cantidad = pedido.get("Cantidad").toString();
-                String estado = pedido.get("Estado").toString();
-                // Crear un diálogo emergente que muestre la información detallada del pedido
-                AlertDialog.Builder builder = new AlertDialog.Builder(Cocina.this);
-                builder.setTitle("Información del pedido " + (position + 1));
-                builder.setMessage("Producto: " + producto + " x" + cantidad + "\nEstado: " + estado);
-                builder.setPositiveButton("OK", null);
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                String pedidoId = listaIdPedidos.get(position);
+
+                db.collection("pedidos")
+                        .document(pedidoId)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    Map<String, Object> pedido = documentSnapshot.getData();
+
+                                    // Obtener los datos del pedido
+                                    List<Map<String, Object>> productos = (List<Map<String, Object>>) pedido.get("productos");
+                                    String estado = (String) pedido.get("estado");
+
+                                    // Crear el mensaje del AlertDialog c
+                                    StringBuilder mensaje = new StringBuilder();
+                                    mensaje.append("Estado: ").append(estado).append("\n\n");
+
+                                    for (Map<String, Object> producto : productos) {
+                                        String nombre = (String) producto.get("nombre");
+                                        int cantidad = ((Long) producto.get("cantidad")).intValue();
+                                        mensaje.append(nombre).append(": ").append(cantidad).append("\n");
+                                    }
+
+                                    // Mostrar el AlertDialog y su mensaje
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Cocina.this);
+                                    builder.setTitle("Detalles del Pedido" + (position + 1))
+                                            .setMessage(mensaje.toString())
+                                            .setPositiveButton("Aceptar", null)
+                                            .show();
+                                }
+                            }
+                        });
             }
         });
+
+
 
     }
 
     private void actualizarUI() {
-        db.collection("Pedidos")
+        db.collection("pedidos")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
@@ -112,11 +142,11 @@ public class Cocina extends AppCompatActivity {
 
                         for (QueryDocumentSnapshot doc : value) {
                             listaIdPedidos.add(doc.getId());
-                            listaPedidos.add(doc.getString("Estado"));
+                            listaPedidos.add(doc.getString("estado"));
                             Map<String, Object> pedido = new HashMap<>();
-                            pedido.put("Producto", doc.getString("Producto"));
-                            pedido.put("Cantidad", doc.getLong("Cantidad"));
-                            pedido.put("Estado", doc.getString("Estado"));
+                          //  pedido.put("Producto", doc.getString("Producto"));
+                            //pedido.put("Cantidad", doc.getLong("Cantidad"));
+                            pedido.put("estado", doc.getString("estado"));
                             listaPedidosMap.add(pedido);
                         }
                         if (listaPedidosMap.size() == 0) {
@@ -135,7 +165,7 @@ public class Cocina extends AppCompatActivity {
 
                                     Map<String, Object> pedido = getItem(position);
                                     PedidoTextView.setText("Pedido" + (position + 1));
-                                    estadoTextView.setText(pedido.get("Estado").toString());
+                                    estadoTextView.setText(pedido.get("estado").toString());
 
                                     return convertView;
                                 }
@@ -191,13 +221,13 @@ public class Cocina extends AppCompatActivity {
         finish();
     }
 
-    public void cooked(View view) {
+    public void cooking(View view) {
         View parent = (View) view.getParent();
         TextView estasdoTextView = parent.findViewById(R.id.EstadoTextView);
         String pedido = estasdoTextView.getText().toString();
         int posicion = listaPedidos.indexOf(pedido);
         if (posicion >= 0) {
-            db.collection("Pedidos").document(listaIdPedidos.get(posicion)).delete();
+            db.collection("pedidos").document(listaIdPedidos.get(posicion)).update("estado", "Cocinando");
         }
 
     }
@@ -208,7 +238,7 @@ public class Cocina extends AppCompatActivity {
         String pedido = estasdoTextView.getText().toString();
         int posicion = listaPedidos.indexOf(pedido);
         if (posicion >= 0) {
-            db.collection("Pedidos").document(listaIdPedidos.get(posicion)).update("Estado", "Completado");
+            db.collection("pedidos").document(listaIdPedidos.get(posicion)).update("estado", "Completado");
         }
 
     }

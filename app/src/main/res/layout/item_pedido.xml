@@ -42,7 +42,7 @@
         android:text="Cocinando"
         android:textColor="@color/white"
         android:focusable="false"
-        android:onClick="cooked"
+        android:onClick="cooking"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <Button
