@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     Button botonOut;
+    Button botonCarta;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,14 @@ public class MainActivity extends AppCompatActivity {
         botonOut.setOnClickListener(view -> {
             logout();
         });
-
+        botonCarta = findViewById(R.id.bCarta);
+        botonCarta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Carta.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
