@@ -107,10 +107,12 @@ import java.util.Map;
                             product.put("nombre", selectedItem.getName());
                             product.put("cantidad", selectedItem.getQuantity());
                             products.add(product);
+
                         }
                     }
                     Map<String, Object> data = new HashMap<>();
                     data.put("productos", products);
+                    data.put("estado", "En espera");
                     db.collection("pedidos").add(data);
                     selectedItems.clear();
                 }
