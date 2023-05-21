@@ -5,10 +5,23 @@
         android:id="@+id/action_cart"
         android:title="@string/Cart"
         android:icon="@drawable/baseline_shopping_cart_24"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/pedidos"
+        android:title="Logout"
+        android:icon="@drawable/pedidos"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/action_profile"
         android:title="@string/profile"
         android:icon="@drawable/baseline_account_circle_24"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/logout"
+        android:title="Logout"
+        android:icon="@drawable/logout"
+        app:showAsAction="always"
+        />
 </menu>

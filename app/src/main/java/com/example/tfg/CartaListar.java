@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldPath;
@@ -43,7 +44,8 @@ import java.util.Map;
         private List<FoodItem> mFoodItems = new ArrayList<>();
         private FoodItemAdapter mAdapter;
         FirebaseFirestore db;
-
+        private FirebaseAuth mAuth;
+        String emailUsuario;
         private String CategoryName;
 
         public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,6 +64,8 @@ import java.util.Map;
             mFoodList = findViewById(R.id.listview);
             mAdapter = new FoodItemAdapter(this, mFoodItems);
             mFoodList.setAdapter(mAdapter);
+            mAuth = FirebaseAuth.getInstance();
+            emailUsuario = mAuth.getCurrentUser().getEmail();
 
             CategoryName = getIntent().getExtras().get("categoría").toString();
             if (CategoryName.equals("entrantes")) {
@@ -113,6 +117,7 @@ import java.util.Map;
                     Map<String, Object> data = new HashMap<>();
                     data.put("productos", products);
                     data.put("estado", "En espera");
+                    data.put("emailUsuario", emailUsuario);
                     db.collection("pedidos").add(data);
                     selectedItems.clear();
                 }

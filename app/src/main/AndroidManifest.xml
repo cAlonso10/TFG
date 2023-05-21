@@ -22,6 +22,10 @@
             android:exported="true"
             android:theme="@style/AppTheme"></activity>
         <activity
+            android:name=".PedidosUsuario"
+            android:exported="true"
+            android:theme="@style/AppTheme"></activity>
+        <activity
             android:name=".Cocina"
             android:exported="true"
             android:theme="@style/AppTheme"></activity>

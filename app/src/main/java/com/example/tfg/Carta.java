@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,7 +36,7 @@ import java.util.Map;
 public class Carta extends AppCompatActivity {
 
     ImageView imgEntrantes, imgBebidas, imgPizza, imgPasta, imgPrincipales, imgPostres;
-
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -44,7 +45,7 @@ public class Carta extends AppCompatActivity {
 
     // Get the app bar and set the title
     getSupportActionBar().setTitle("Carta");
-
+    mAuth = FirebaseAuth.getInstance();
     imgEntrantes = (ImageView) findViewById(R.id.imgEntrantes);
     imgBebidas = (ImageView) findViewById(R.id.imgBebidas);
     imgPizza = (ImageView) findViewById(R.id.imgPizza);
@@ -108,21 +109,46 @@ public class Carta extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.action_cart) {
-            //Intent intent = new Intent(this, Carrito.class);
-            //startActivity(intent);
-            return true;
-        } else if (id == R.id.action_profile) {
-            //TODO:Handle profile page
-            return true;
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_cart:
+                //Intent intent = new Intent(this, Carrito.class);
+                //startActivity(intent);
+                return true;
+            case R.id.action_profile:
+                //TODO:Handle profile page
+                return true;
+            case R.id.logout:
+                logout();
+                return true;
+            case R.id.pedidos:
+                goPedidos();
+                return true;
+            default:return super.onOptionsItemSelected(item);
+
+
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
+    private void goPedidos() {
+        Intent intent = new Intent(Carta.this, PedidosUsuario.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void logout() {
+        mAuth.signOut();
+        goLogin();
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(Carta.this, Login.class);
+        startActivity(intent);
+        finish();
+    }
 
 }

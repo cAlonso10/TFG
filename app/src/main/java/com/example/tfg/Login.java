@@ -164,6 +164,12 @@ public class Login extends AppCompatActivity {
             signIn();
         });
 
+        Button botonPaypal = findViewById(R.id.botonPaypal);
+        botonPaypal.setOnClickListener(view -> {
+            Intent intentPaypal = new Intent(Login.this,Paypal.class);
+            startActivity(intentPaypal);
+        });
+
     }
 
     @Override
@@ -233,7 +239,7 @@ public class Login extends AppCompatActivity {
         if (emailsCocina.contains(userEmail)) {
             intent = new Intent(Login.this, Cocina.class);
         } else {
-            intent = new Intent(Login.this, MainActivity.class);
+            intent = new Intent(Login.this, Carta.class);
         }
 
         startActivity(intent);
