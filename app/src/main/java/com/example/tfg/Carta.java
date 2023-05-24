@@ -3,8 +3,10 @@ package com.example.tfg;
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,13 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +43,7 @@ public class Carta extends AppCompatActivity {
 
     ImageView imgEntrantes, imgBebidas, imgPizza, imgPasta, imgPrincipales, imgPostres;
     private FirebaseAuth mAuth;
+    String emailUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -46,6 +53,7 @@ public class Carta extends AppCompatActivity {
     // Get the app bar and set the title
     getSupportActionBar().setTitle("Carta");
     mAuth = FirebaseAuth.getInstance();
+    emailUsuario = mAuth.getCurrentUser().getEmail();
     imgEntrantes = (ImageView) findViewById(R.id.imgEntrantes);
     imgBebidas = (ImageView) findViewById(R.id.imgBebidas);
     imgPizza = (ImageView) findViewById(R.id.imgPizza);
@@ -141,9 +149,49 @@ public class Carta extends AppCompatActivity {
     }
 
     private void logout() {
-        mAuth.signOut();
-        goLogin();
+        List<String> emailsMesas = Arrays.asList("restaurante1@mesa.com", "restaurante2@mesa.com", "restaurante3@mesa.com");
+        if (emailsMesas.contains(emailUsuario)){
+            showPasswordDialog();
+        } else {
+            mAuth.signOut();
+            goLogin();
+        }
     }
+
+    private void showPasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Ingrese la contraseña");
+
+        final EditText passwordInput = new EditText(this);
+        passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(passwordInput);
+
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String password = passwordInput.getText().toString().trim();
+
+                if (password.equals("54321")) {
+                    mAuth.signOut();
+                    goLogin();
+                } else {
+                    Toast.makeText(Carta.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.create().show();
+    }
+
+
+
 
     private void goLogin() {
         Intent intent = new Intent(Carta.this, Login.class);

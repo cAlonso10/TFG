@@ -99,7 +99,7 @@ public class Login extends AppCompatActivity {
                             if (emailsCocina.contains(userEmail)) {
                                 intent = new Intent(Login.this, Cocina.class);
                             } else {
-                                intent = new Intent(Login.this, MainActivity.class);
+                                intent = new Intent(Login.this, Carta.class);
                             }
 
                             startActivity(intent);
@@ -145,7 +145,7 @@ public class Login extends AppCompatActivity {
                                 if (emailsCocina.contains(userEmail)) {
                                     intent = new Intent(Login.this, Cocina.class);
                                 } else {
-                                    intent = new Intent(Login.this, MainActivity.class);
+                                    intent = new Intent(Login.this, Carta.class);
                                 }
 
                                 startActivity(intent);
