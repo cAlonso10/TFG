@@ -6,7 +6,7 @@ buildscript {
         jcenter()
 
         maven {
-            url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
+            url 'https://cardinalcommerceprod.jfrog.io/artifactory/android'
             credentials {
                 // Be sure to add these non-sensitive credentials in order to retrieve dependencies from
                 // the private repository.

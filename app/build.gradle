@@ -27,10 +27,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
 
 dependencies {
 
+    //implementation 'com.paypal.checkout:android-sdk:0.2.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -49,10 +51,5 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.stripe:stripe-java:22.0.0'
     implementation 'com.stripe:stripe-android:17.2.0'
-   /* implementation 'com.paypal.checkout:android-sdk:0.2.0'
-    implementation('com.example:library:1.0.0') {
-        exclude group: 'com.example', module: 'problematic-dependency'
-    }*/
-
 
 }

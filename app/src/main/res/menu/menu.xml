@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Cocina">
 
+
+    <item
+        android:id="@+id/changeMode"
+        android:title="Logout"
+        android:icon="@drawable/modopedidos"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/logout"
         android:title="Logout"
