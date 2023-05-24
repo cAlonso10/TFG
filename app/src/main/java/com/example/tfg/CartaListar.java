@@ -24,16 +24,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,34 +75,143 @@ import java.util.Map;
             emailUsuario = mAuth.getCurrentUser().getEmail();
 
             CategoryName = getIntent().getExtras().get("categoría").toString();
-            if (CategoryName.equals("entrantes")) {
-                mFoodItems.add(new FoodItem("Pizza de pepperoni", "Pizza de pepperoni con queso", 10.99));
-                mFoodItems.add(new FoodItem("Pizza margarita", "Pizza con tomate, albahaca y queso", 11.99));
-                mFoodItems.add(new FoodItem("Pizza hawaiana", "Pizza con jamón, piña y queso", 12.99));
+            CollectionReference foodItemsRef = db.collection("comida").document(CategoryName).collection("foodItems");
+            ListenerRegistration listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                if (error != null) {
+                    // Handle errors
+                    return;
+                }
+                mFoodItems.clear(); // Clear the existing food items
+                if (value != null && !value.isEmpty()) {
+                    for (DocumentSnapshot document : value.getDocuments()) {
+                        FoodItem foodItem = document.toObject(FoodItem.class);
+                        if (foodItem != null) {
+                            mFoodItems.add(foodItem);
 
-                mFoodItems.add(new FoodItem("Spaghetti bolognese", "Spaghetti con salsa de carne", 9.99));
-                mFoodItems.add(new FoodItem("Fettuccine Alfredo", "Fettuccine con salsa de queso parmesano", 10.99));
-                mFoodItems.add(new FoodItem("Penne arrabiata", "Penne con salsa picante de tomate", 11.99));
+                        }
+                    }
+                }
+            });
 
-                mFoodItems.add(new FoodItem("Patatas Bravas", "Patatas con salsa Brava", 8.99));
-                mFoodItems.add(new FoodItem("Calamares", "Calamares fritos", 6.99));
-                mFoodItems.add(new FoodItem("Nachos con queso", "Nachos con queso y pico de gallo", 9.99));
-
-                mFoodItems.add(new FoodItem("CocaCola", "Lata 33cl", 1.99));
-                mFoodItems.add(new FoodItem("Cerveza Lata", "Lata 33cl", 1.99));
-                mFoodItems.add(new FoodItem("Copa Vino", "Vino Tinto Reserva", 2.99));
-
-                mFoodItems.add(new FoodItem("Arroz con Bogavante", "Arroza con Bovagante y verduras", 22.99));
-                mFoodItems.add(new FoodItem("Paella Valenciana", "Paella con Carne y Alubias", 16.99));
-                mFoodItems.add(new FoodItem("Entrecot con patatas", "Entrecot de ternera Angus", 18.99));
-
-                mFoodItems.add(new FoodItem("Tarta Chocolate", "Porcion tarta tres chocolates", 7.99));
-                mFoodItems.add(new FoodItem("Arroz con Leche", "Vaso de Arroz con Leche y canela casero", 4.99));
-                mFoodItems.add(new FoodItem("Cheescake", "Porción de tarta de queso casera", 7.99));
-            } else {
-                mFoodItems.add(new FoodItem("Not Found", "Not Found", 0));
-            }
             mAdapter.notifyDataSetChanged();
+
+            // Handle other category names
+            if (CategoryName.equals("entrantes")) {
+                foodItemsRef = db.collection("comida").document("entrantes").collection("foodItems");
+                listenerRegistration.remove(); // Remove the previous listener
+                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle errors
+                        return;
+                    }
+                    mFoodItems.clear(); // Clear the existing food items
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot document : value.getDocuments()) {
+                            FoodItem foodItem = document.toObject(FoodItem.class);
+                            if (foodItem != null) {
+                                mFoodItems.add(foodItem);
+
+                            }
+                        }
+                    }
+                });
+            }else if (CategoryName.equals("bebidas")) {
+                foodItemsRef = db.collection("comida").document("bebidas").collection("foodItems");
+                listenerRegistration.remove(); // Remove the previous listener
+                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle errors
+                        return;
+                    }
+                    mFoodItems.clear(); // Clear the existing food items
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot document : value.getDocuments()) {
+                            FoodItem foodItem = document.toObject(FoodItem.class);
+                            if (foodItem != null) {
+                                mFoodItems.add(foodItem);
+
+                            }
+                        }
+                    }
+                });
+            } else if (CategoryName.equals("pasta")) {
+
+                foodItemsRef = db.collection("comida").document("pasta").collection("foodItems");
+                listenerRegistration.remove(); // Remove the previous listener
+                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle errors
+                        return;
+                    }
+                    mFoodItems.clear(); // Clear the existing food items
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot document : value.getDocuments()) {
+                            FoodItem foodItem = document.toObject(FoodItem.class);
+                            if (foodItem != null) {
+                                mFoodItems.add(foodItem);
+
+                            }
+                        }
+                    }
+                });
+            } else if (CategoryName.equals("pizza")) {
+                foodItemsRef = db.collection("comida").document("pizza").collection("foodItems");
+                listenerRegistration.remove(); // Remove the previous listener
+                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle errors
+                        return;
+                    }
+                    mFoodItems.clear(); // Clear the existing food items
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot document : value.getDocuments()) {
+                            FoodItem foodItem = document.toObject(FoodItem.class);
+                            if (foodItem != null) {
+                                mFoodItems.add(foodItem);
+
+                            }
+                        }
+                    }
+                });
+            } else if (CategoryName.equals("postres")) {
+                foodItemsRef = db.collection("comida").document("postres").collection("foodItems");
+                listenerRegistration.remove(); // Remove the previous listener
+                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle errors
+                        return;
+                    }
+                    mFoodItems.clear(); // Clear the existing food items
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot document : value.getDocuments()) {
+                            FoodItem foodItem = document.toObject(FoodItem.class);
+                            if (foodItem != null) {
+                                mFoodItems.add(foodItem);
+
+                            }
+                        }
+                    }
+                });
+            } else if (CategoryName.equals("principales")) {
+                foodItemsRef = db.collection("comida").document("principales").collection("foodItems");
+                listenerRegistration.remove(); // Remove the previous listener
+                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle errors
+                        return;
+                    }
+                    mFoodItems.clear(); // Clear the existing food items
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot document : value.getDocuments()) {
+                            FoodItem foodItem = document.toObject(FoodItem.class);
+                            if (foodItem != null) {
+                                mFoodItems.add(foodItem);
+
+                            }
+                        }
+                    }
+                });
+            }
 
             Button checkoutButton = findViewById(R.id.checkout_button);
             checkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +234,7 @@ import java.util.Map;
                     data.put("productos", products);
                     data.put("estado", "En espera");
                     data.put("emailUsuario", emailUsuario);
+                    data.put("fecha", Timestamp.now());
                     db.collection("pedidos").add(data);
                     selectedItems.clear();
                 }
