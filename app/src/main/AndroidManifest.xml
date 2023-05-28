@@ -42,6 +42,14 @@
             android:exported="true"
             android:theme="@style/Theme.TFG"></activity>
         <activity
+            android:name=".Perfil"
+            android:exported="true"
+            android:theme="@style/Theme.TFG"></activity>
+        <activity
+            android:name=".Usuarios"
+            android:exported="true"
+            android:theme="@style/Theme.TFG"></activity>
+        <activity
             android:name=".Splash"
             android:exported="true" >
             <intent-filter>

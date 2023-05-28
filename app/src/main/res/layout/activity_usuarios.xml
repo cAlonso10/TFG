@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".Usuarios">
+
+    <EditText
+        android:id="@+id/editTextCorreo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese el correo electrónico" />
+
+    <Button
+        android:id="@+id/buscar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buscar" />
+
+    <TextView
+        android:id="@+id/textViewNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre:" />
+
+    <TextView
+        android:id="@+id/textViewTelefono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Teléfono:" />
+
+    <TextView
+        android:id="@+id/textViewDireccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dirección:" />
+
+</LinearLayout>

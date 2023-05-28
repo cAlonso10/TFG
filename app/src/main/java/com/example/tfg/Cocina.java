@@ -1,12 +1,8 @@
 package com.example.tfg;
 
-import static android.content.ContentValues.TAG;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,26 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -251,7 +240,7 @@ public class Cocina extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.menu_cocina,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -271,10 +260,15 @@ public class Cocina extends AppCompatActivity {
                     Toast.makeText(Cocina.this, "Mostrando pedidos completados", Toast.LENGTH_LONG).show();
                     listaEnModoCompletados = true;
                 }
-                return true;
+                break;
+            case R.id.usuarios:
+                Intent intent = new Intent(Cocina.this, Usuarios.class);
+                startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
 
