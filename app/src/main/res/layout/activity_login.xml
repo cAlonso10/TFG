@@ -111,7 +111,7 @@
         app:layout_constraintTop_toBottomOf="@+id/registro" />
 
     <Button
-        android:id="@+id/botonPaypal"
+        android:id="@+id/pago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"

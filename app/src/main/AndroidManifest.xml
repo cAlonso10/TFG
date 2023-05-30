@@ -46,6 +46,10 @@
             android:exported="true"
             android:theme="@style/Theme.TFG"></activity>
         <activity
+            android:name=".Pago"
+            android:exported="true"
+            android:theme="@style/Theme.TFG"></activity>
+        <activity
             android:name=".Splash"
             android:exported="true" >
             <intent-filter>
