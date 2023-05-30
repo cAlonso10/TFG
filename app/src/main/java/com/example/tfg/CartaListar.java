@@ -2,6 +2,7 @@ package com.example.tfg;
 
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,8 +48,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-    public class CartaListar extends AppCompatActivity {
+public class CartaListar extends AppCompatActivity {
         ListView mFoodList;
 
         private List<FoodItem> mFoodItems = new ArrayList<>();
@@ -55,19 +60,40 @@ import java.util.Map;
         String emailUsuario;
         private String CategoryName;
 
+        TextView loadingText;
+
         public boolean onCreateOptionsMenu(Menu menu) {
             getMenuInflater().inflate(R.menu.menu_carta, menu);
             return true;
         }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_cart) {
+            Intent intent = new Intent(CartaListar.this, Carrito.class);
+            intent.putParcelableArrayListExtra("selectedItems", mAdapter.getSelectedItems());
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed() {
+        ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
+        Intent backIntent = new Intent();
+        backIntent.putParcelableArrayListExtra("selectedItems", selectedItems);
+        setResult(RESULT_OK, backIntent);
+        super.onBackPressed();
+    }
 
-        @Override
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_carta_2);
             FoodItemAdapter foodItemAdapter = new FoodItemAdapter(this, new ArrayList<FoodItem>());
             ArrayList<FoodItem> selectedItems = foodItemAdapter.getSelectedItems();
             db = FirebaseFirestore.getInstance();
-
+            loadingText = findViewById(R.id.loading_text);
+            loadingText.setVisibility(View.VISIBLE);
             mFoodList = findViewById(R.id.listview);
             mAdapter = new FoodItemAdapter(this, mFoodItems);
             mFoodList.setAdapter(mAdapter);
@@ -75,6 +101,9 @@ import java.util.Map;
             emailUsuario = mAuth.getCurrentUser().getEmail();
 
             CategoryName = getIntent().getExtras().get("categoría").toString();
+            String capCategoryName = CategoryName.substring(0, 1).toUpperCase() + CategoryName.substring(1);
+            getSupportActionBar().setTitle(capCategoryName);
+
             CollectionReference foodItemsRef = db.collection("comida").document(CategoryName).collection("foodItems");
             ListenerRegistration listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
                 if (error != null) {
@@ -94,6 +123,7 @@ import java.util.Map;
             });
 
             mAdapter.notifyDataSetChanged();
+            loadingText.setVisibility(View.GONE);
 
             // Handle other category names
             if (CategoryName.equals("entrantes")) {
@@ -213,11 +243,17 @@ import java.util.Map;
                 });
             }
 
+
             Button checkoutButton = findViewById(R.id.checkout_button);
             checkoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
+                    Intent intent = new Intent(CartaListar.this, Carrito.class);
+                    intent.putParcelableArrayListExtra("selectedItems", selectedItems);
+                    Log.d(TAG, "Selected items: " + selectedItems.toString());
+                    startActivity(intent);
+                    /*FirebaseFirestore db = FirebaseFirestore.getInstance();
                     ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
                     Log.d(TAG, "Selected items: " + selectedItems.toString());
                     List<Map<String, Object>> products = new ArrayList<>();
@@ -236,14 +272,11 @@ import java.util.Map;
                     data.put("emailUsuario", emailUsuario);
                     data.put("fecha", Timestamp.now());
                     db.collection("pedidos").add(data);
-                    selectedItems.clear();
+                    selectedItems.clear();*/
                 }
             });
         }
-
-
-
-        public class FoodItemAdapter extends BaseAdapter {
+        public static class FoodItemAdapter extends BaseAdapter {
             private Context mContext;
             private List<FoodItem> mFoodItems;
             private List<FoodItem> mSelectedItems = new ArrayList<>();
@@ -294,8 +327,15 @@ import java.util.Map;
                     public void onClick(View v) {
                         int quantity = foodItem.getQuantity();
                         quantity++;
-                        foodItem.setQuantity(quantity);
-                        mSelectedItems.add(foodItem);
+                        if (!mSelectedItems.contains(foodItem)) {
+                            // Item not present in the list, add it with a quantity of 1
+                            foodItem.setQuantity(1);
+                            mSelectedItems.add(foodItem);
+                        } else {
+                            // Item already present, increase the quantity
+                            foodItem.setQuantity(quantity);
+                        }
+
                         Log.d(TAG, "items" + getSelectedItems().toString() );
                         notifyDataSetChanged();
                     }
@@ -308,6 +348,10 @@ import java.util.Map;
                         if (quantity > 0) {
                             quantity--;
                             foodItem.setQuantity(quantity);
+                            if (quantity == 0) {
+                                // Quantity reached 0, remove the item from the list
+                                mSelectedItems.remove(foodItem);
+                            }
                             notifyDataSetChanged();
                             Log.d(TAG, "items" + getSelectedItems().toString() );
                         }

@@ -5,7 +5,18 @@
     android:layout_height="match_parent"
     android:background="@color/orange_500"
     tools:context=".CartaListar">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:text="@string/loading"
+        android:textColor="@color/white"
+        android:textSize="35dp"
+        android:visibility="visible" />
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
@@ -20,6 +31,7 @@
             android:id="@+id/checkout_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/checkout" />
 
     </LinearLayout>

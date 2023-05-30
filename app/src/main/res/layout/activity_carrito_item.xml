@@ -25,32 +25,37 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:maxWidth="100dp"
         android:orientation="horizontal"
-        android:layout_marginStart="16dp">
+        android:padding="5dp">
 
         <Button
             android:id="@+id/minus_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="-"
-            android:textSize="18sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/item_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
             android:text="0"
-            android:layout_gravity="center_vertical"/>
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/plus_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="+"
-            android:textSize="18sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

@@ -8,7 +8,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/pedidos"
-        android:title="Logout"
+        android:title="Pedidos"
         android:icon="@drawable/pedidos"
         app:showAsAction="always"
         />

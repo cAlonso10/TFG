@@ -23,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,11 +46,34 @@ public class Carta extends AppCompatActivity {
     ImageView imgEntrantes, imgBebidas, imgPizza, imgPasta, imgPrincipales, imgPostres;
     private FirebaseAuth mAuth;
     String emailUsuario;
+    ArrayList<FoodItem> selectedItems;
+    private ActivityResultLauncher<Intent> cartaListarLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_carta);
 
+    cartaListarLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        ArrayList<FoodItem> updatedSelectedItems = data.getParcelableArrayListExtra("selectedItems");
+                        if (updatedSelectedItems != null) {
+                            // Add the updated selected items to the existing selected items
+                            if (selectedItems == null) {
+                                selectedItems = new ArrayList<>();
+                            }
+                            selectedItems.addAll(updatedSelectedItems);
+
+                            // Handle the selected items as needed or store them for later use
+                            // ...
+                        }
+                    }
+                }
+            }
+    );
 
     // Get the app bar and set the title
     getSupportActionBar().setTitle("Carta");
@@ -60,12 +85,13 @@ public class Carta extends AppCompatActivity {
     imgPasta = (ImageView) findViewById(R.id.imgPasta);
     imgPrincipales = (ImageView) findViewById(R.id.imgPrincipales);
     imgPostres = (ImageView) findViewById(R.id.imgPostres);
+
     imgEntrantes.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(Carta.this,CartaListar.class);
-            intent.putExtra("categoría","entrantes");
-            startActivity(intent);
+            Intent intent = new Intent(Carta.this, CartaListar.class);
+            intent.putExtra("categoría", "entrantes");
+            cartaListarLauncher.launch(intent);
         }
     });
     imgBebidas.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +99,7 @@ public class Carta extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(Carta.this,CartaListar.class);
             intent.putExtra("categoría","bebidas");
-            startActivity(intent);
+            cartaListarLauncher.launch(intent);
         }
     });
     imgPizza.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +107,7 @@ public class Carta extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(Carta.this,CartaListar.class);
             intent.putExtra("categoría","pizza");
-            startActivity(intent);
+            cartaListarLauncher.launch(intent);
         }
     });
     imgPasta.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +115,7 @@ public class Carta extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(Carta.this,CartaListar.class);
             intent.putExtra("categoría","pasta");
-            startActivity(intent);
+            cartaListarLauncher.launch(intent);
         }
     });
     imgPrincipales.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +123,7 @@ public class Carta extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(Carta.this,CartaListar.class);
             intent.putExtra("categoría","principales");
-            startActivity(intent);
+            cartaListarLauncher.launch(intent);
         }
     });
     imgPostres.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +131,7 @@ public class Carta extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(Carta.this,CartaListar.class);
             intent.putExtra("categoría","postres");
-            startActivity(intent);
+            cartaListarLauncher.launch(intent);
         }
     });
 
@@ -123,8 +149,7 @@ public class Carta extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_cart:
-                //Intent intent = new Intent(this, Carrito.class);
-                //startActivity(intent);
+                goCart();
                 return true;
             case R.id.action_profile:
                 //TODO:Handle profile page
@@ -140,6 +165,13 @@ public class Carta extends AppCompatActivity {
 
         }
 
+    }
+
+    private void goCart() {
+        Intent intent = new Intent(Carta.this, Carrito.class);
+        intent.putParcelableArrayListExtra("selectedItems", selectedItems);
+
+        cartaListarLauncher.launch(intent);
     }
 
     private void goPedidos() {

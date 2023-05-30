@@ -7,13 +7,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Carrito">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Carrito"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
     <ListView
         android:id="@+id/list_view_carrito"
         android:layout_width="match_parent"
@@ -25,14 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Total: $0.00"
+        android:text="Total: €0.00"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/button_hacer_pedido"
+        android:id="@+id/button_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hacer Pedido" />
+        android:text="Ir al pago" />
 
 </LinearLayout>

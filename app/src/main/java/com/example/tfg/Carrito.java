@@ -1,57 +1,104 @@
 package com.example.tfg;
 
+import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-/*public class Carrito extends AppCompatActivity {
+public class Carrito extends AppCompatActivity {
     ListView mCartList;
 
     private List<CartItem> mCartItems = new ArrayList<>();
     private CartItemAdapter mAdapter;
     private double mTotalPrice = 0.0;
+    private FirebaseAuth mAuth;
+    FirebaseFirestore db;
+    String emailUsuario;
+    private ArrayList<FoodItem> mSelectedItems;
+    private ArrayList<FoodItem> mCurrentSelectedItems;
+    Button paymentButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carrito);
+        getSupportActionBar().setTitle("Carrito");
 
         mCartList = findViewById(R.id.list_view_carrito);
-        mAdapter = new CartItemAdapter(this, mCartItems);
-        mCartList.setAdapter(mAdapter);
+        TextView totalTextView = findViewById(R.id.text_view_total);
+        mSelectedItems = new ArrayList<>();
+        mCurrentSelectedItems = new ArrayList<>();
+        paymentButton = findViewById(R.id.button_payment);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        emailUsuario = mAuth.getCurrentUser().getEmail();
 
         // Get the selected items from the previous activity
         Intent intent = getIntent();
-        CartaListar.FoodItemAdapter adapter = new CartaListar.FoodItemAdapter(this, new ArrayList<FoodItem>());
-        ArrayList<FoodItem> selectedItems = adapter.getSelectedItems();
+        mSelectedItems = intent.getParcelableArrayListExtra("selectedItems");
+        Log.d(TAG, "Cart selected items: " + mSelectedItems);
 
+        if (mCartItems == null) {
+            mCartItems = new ArrayList<>();
+        }
         // Add the selected items to the cart
-        if (selectedItems != null) {
+        if (mSelectedItems != null) {
             // Add the selected items to the cart
-            for (FoodItem selectedItem : selectedItems) {
-                if (selectedItem.getQuantity() > 0) {
+            for (FoodItem selectedItem : mSelectedItems) {
+                if (selectedItem.getQuantity() > 0 && !isItemInCart(selectedItem)) {
                     CartItem cartItem = new CartItem(selectedItem.getName(), selectedItem.getPrice(), selectedItem.getQuantity());
                     mCartItems.add(cartItem);
                     mTotalPrice += (selectedItem.getPrice() * selectedItem.getQuantity());
                 }
+                totalTextView.setText("Total: €" + String.format("%.2f", mTotalPrice));
             }
         }
 
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new CartItemAdapter(this, mCartItems);
+        mCartList.setAdapter(mAdapter);
+
+        paymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start the payment activity
+                //Intent paymentIntent = new Intent(Carrito.this, //Clase metodo de pago);
+                //startActivity(paymentIntent);
+            }
+        });
+
+    }
+
+    private boolean isItemInCart(FoodItem item) {
+        for (CartItem cartItem : mCartItems) {
+            if (cartItem.getName().equals(item.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void onPlaceOrderClicked(View view) {
@@ -64,8 +111,30 @@ import java.util.UUID;
         double totalPrice = mTotalPrice;
 
         Pedido pedido = new Pedido(orderId, status, items, totalPrice);
+        //Send Order to Firestore
 
-        // TODO: Send the order to the server
+        DocumentReference docRef = db.collection("pedidos").document(orderId);
+        docRef.set(pedido);
+        /*FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
+        Log.d(TAG, "Selected items: " + selectedItems.toString());
+        List<Map<String, Object>> products = new ArrayList<>();
+        for (FoodItem selectedItem : selectedItems) {
+            if (selectedItem.getQuantity() > 0) {
+                Map<String, Object> product = new HashMap<>();
+                product.put("nombre", selectedItem.getName());
+                product.put("cantidad", selectedItem.getQuantity());
+                products.add(product);
+
+            }
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("productos", products);
+        data.put("estado", "En espera");
+        data.put("emailUsuario", emailUsuario);
+        data.put("fecha", Timestamp.now());
+        db.collection("pedidos").add(data);
+        selectedItems.clear();*/
 
         // Clear the cart and go back to the main activity
         mCartItems.clear();
@@ -77,6 +146,8 @@ import java.util.UUID;
     public class CartItemAdapter extends BaseAdapter {
         private Carrito mContext;
         private List<CartItem> mCartItems;
+        private List<FoodItem> mSelectedCartItems = new ArrayList<>();
+        TextView totalTextView = findViewById(R.id.text_view_total);
 
         public CartItemAdapter(Carrito context, List<CartItem> cartItems) {
             mContext = context;
@@ -109,13 +180,47 @@ import java.util.UUID;
             TextView itemNameTextView = view.findViewById(R.id.item_name);
             TextView itemPriceTextView = view.findViewById(R.id.item_price);
             TextView itemQuantityTextView = view.findViewById(R.id.item_quantity);
+            Button plusButton = (Button) view.findViewById(R.id.plus_button);
+            Button minusButton = (Button) view.findViewById(R.id.minus_button);
 
-            final CartItem cartItem = mCartItems.get(position);
+            CartItem cartItem = mCartItems.get(position);
             itemNameTextView.setText(cartItem.getName());
-            itemPriceTextView.setText("$" + cartItem.getPrice());
+            itemPriceTextView.setText("€" + cartItem.getPrice());
             itemQuantityTextView.setText(String.valueOf(cartItem.getQuantity()));
 
+            plusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cartItem.setQuantity(cartItem.getQuantity() + 1);
+                    notifyDataSetChanged();
+                    updateTotalPrice();
+                }
+            });
+
+            minusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (cartItem.getQuantity() > 0) {
+                        cartItem.setQuantity(cartItem.getQuantity() - 1);
+                        if (cartItem.getQuantity() == 0) {
+                            mCartItems.remove(position);
+                        }
+                        notifyDataSetChanged();
+                        updateTotalPrice();
+                    }
+                }
+            });
+
             return view;
+
+        }
+
+        private void updateTotalPrice() {
+            double totalPrice = 0;
+            for (CartItem item : mCartItems) {
+                totalPrice += item.getPrice() * item.getQuantity();
+            }
+            totalTextView.setText("Total: €" + String.format("%.2f", totalPrice));
         }
     }
-}*/
+}
