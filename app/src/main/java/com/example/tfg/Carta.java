@@ -152,7 +152,8 @@ public class Carta extends AppCompatActivity {
                 goCart();
                 return true;
             case R.id.action_profile:
-                //TODO:Handle profile page
+                Intent intent = new Intent(this, Perfil.class);
+                startActivity(intent);
                 return true;
             case R.id.logout:
                 logout();

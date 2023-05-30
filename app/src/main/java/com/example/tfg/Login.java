@@ -35,7 +35,7 @@ import java.util.List;
 
 public class Login extends AppCompatActivity {
 
-    Button botonLogin,botonRegistro,botonGoogle;
+    Button botonLogin,botonRegistro,botonGoogle,botonPago;
 
     EditText emailText, passText;
     private FirebaseAuth mAuth;
@@ -61,6 +61,11 @@ public class Login extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
 
+        botonPago = findViewById(R.id.pago);
+        botonPago.setOnClickListener(view -> {
+            Intent intent = new Intent(Login.this, Pago.class);
+            startActivity(intent);
+        });
 
 
 
@@ -164,11 +169,7 @@ public class Login extends AppCompatActivity {
             signIn();
         });
 
-        Button botonPaypal = findViewById(R.id.botonPaypal);
-        botonPaypal.setOnClickListener(view -> {
-            Intent intentPaypal = new Intent(Login.this,Paypal.class);
-            startActivity(intentPaypal);
-        });
+
 
     }
 

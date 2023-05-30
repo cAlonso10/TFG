@@ -32,6 +32,10 @@ android {
 
 dependencies {
 
+
+    implementation 'com.stripe:stripe-java:20.77.0'
+    implementation 'com.stripe:stripe-android:17.2.0'
+    implementation 'com.android.volley:volley:1.2.1'
     //implementation 'com.paypal.checkout:android-sdk:0.2.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
