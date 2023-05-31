@@ -84,9 +84,30 @@ public class Carrito extends AppCompatActivity {
         paymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start the payment activity
-                //Intent paymentIntent = new Intent(Carrito.this, //Clase metodo de pago);
-                //startActivity(paymentIntent);
+                // Create an order
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                String timestamp = dateFormat.format(new Date());
+                String orderId = timestamp + String.format("%02d", new Random().nextInt(100));
+                String status = "CREADO";
+                List<CartItem> items = mCartItems;
+                double totalPrice = mTotalPrice;
+
+                Pedido pedido = new Pedido(orderId, status, items, totalPrice);
+                Log.d(TAG, "Pedido Creado" + pedido.toString());
+                // Start the payment activity:
+                //Finished payment activity:
+                //if respuesta == OK
+                if(1>0){
+                    //Send Order to Firestore
+                    DocumentReference docRef = db.collection("pedidos").document(orderId);
+                    docRef.set(pedido);
+                    //Clear cart and go back to Carta
+                    mCartItems.clear();
+                    Intent intent = new Intent(Carrito.this, Carta.class);
+                    startActivity(intent);
+                }else{
+                    Log.d(TAG, "Error al pagar" + pedido.getOrderId());
+                }
             }
         });
 
@@ -100,49 +121,6 @@ public class Carrito extends AppCompatActivity {
         }
         return false;
     }
-
-    public void onPlaceOrderClicked(View view) {
-        // Create a new order with an order ID, status, items, and total price
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        String timestamp = dateFormat.format(new Date());
-        String orderId = timestamp + String.format("%02d", new Random().nextInt(100));
-        String status = "CREADO";
-        List<CartItem> items = mCartItems;
-        double totalPrice = mTotalPrice;
-
-        Pedido pedido = new Pedido(orderId, status, items, totalPrice);
-        //Send Order to Firestore
-
-        DocumentReference docRef = db.collection("pedidos").document(orderId);
-        docRef.set(pedido);
-        /*FirebaseFirestore db = FirebaseFirestore.getInstance();
-        ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
-        Log.d(TAG, "Selected items: " + selectedItems.toString());
-        List<Map<String, Object>> products = new ArrayList<>();
-        for (FoodItem selectedItem : selectedItems) {
-            if (selectedItem.getQuantity() > 0) {
-                Map<String, Object> product = new HashMap<>();
-                product.put("nombre", selectedItem.getName());
-                product.put("cantidad", selectedItem.getQuantity());
-                products.add(product);
-
-            }
-        }
-        Map<String, Object> data = new HashMap<>();
-        data.put("productos", products);
-        data.put("estado", "En espera");
-        data.put("emailUsuario", emailUsuario);
-        data.put("fecha", Timestamp.now());
-        db.collection("pedidos").add(data);
-        selectedItems.clear();*/
-
-        // Clear the cart and go back to the main activity
-        mCartItems.clear();
-        mAdapter.notifyDataSetChanged();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     public class CartItemAdapter extends BaseAdapter {
         private Carrito mContext;
         private List<CartItem> mCartItems;
