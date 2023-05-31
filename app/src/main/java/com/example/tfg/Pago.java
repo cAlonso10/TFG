@@ -28,8 +28,8 @@ import java.util.Map;
 public class Pago extends AppCompatActivity {
 
     Button button;
-    String SECRET_KEY="sk_test_51NDVc9G22hZPLa1nJ3nym01zR0eY4cemjl4cIVoTxlvT5uRaLzioNtDCvzPrbLKVvmHvYPrr8C3ySeulvkGhOIW700vIlob3Bk";
-    String PUBLISH_KEY="pk_test_51NDVc9G22hZPLa1nAftcMtwSHmw06EOnlpvaxXsGuvnWYJS7A7mwAYkb175LakMOtC8fo2pNG9SalDRvb3VFQdjD00jL8301tN";
+    String SECRET_KEY="sk_test_51NDlLEKickMEKTkfPlbRqIJ74L9WluDjvPobpMwJyFWOahsDNQNqncfyzcgmzFjjodJO6da8y5xy56bWfWvwwd4h00chndM3pP";
+    String PUBLISH_KEY="pk_test_51NDlLEKickMEKTkfmGCihEmv1Dpfc91vh7Il5dORzzxaPQnw9ir5WOMtR1tpJ3pxe5c2yDNKI6O86esdg8EYAWDW00Dv8xwo36";
     PaymentSheet paymentSheet;
 
     String customerID;
@@ -182,7 +182,7 @@ public class Pago extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("customer",customerID);
-                params.put("amount","1000"+"00");
+                params.put("amount","150"+"00");
                 params.put("currency","eur");
                 params.put("automatic_payment_methods[enabled]","true");
                 return params;
