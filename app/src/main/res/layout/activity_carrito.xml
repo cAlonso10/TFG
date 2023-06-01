@@ -26,6 +26,6 @@
         android:id="@+id/button_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ir al pago" />
+        android:text="@string/pay" />
 
 </LinearLayout>

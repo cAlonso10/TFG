@@ -2,12 +2,10 @@ package com.example.tfg;
 
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;import android.view.LayoutInflater;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,6 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,7 +24,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 public class Carrito extends AppCompatActivity {
     ListView mCartList;
@@ -88,7 +87,6 @@ public class Carrito extends AppCompatActivity {
         }
         // Add the selected items to the cart
         if (mSelectedItems != null) {
-            // Add the selected items to the cart
             for (FoodItem selectedItem : mSelectedItems) {
                 if (selectedItem.getQuantity() > 0 && !isItemInCart(selectedItem)) {
                     CartItem cartItem = new CartItem(selectedItem.getName(), selectedItem.getPrice(), selectedItem.getQuantity());
@@ -105,14 +103,23 @@ public class Carrito extends AppCompatActivity {
         paymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mTotalPrice > 0){
                 // Create an order
                 String status = "En espera";
                 List<CartItem> items = mCartItems;
                 double totalPrice = mTotalPrice;
 
+
                 pedido = new Pedido(emailUsuario, status, items, totalPrice);
+
+                //Create an Order
+
                 // Start the payment activity:
                 PaymentFlow();
+                }else{
+                    Toast.makeText(Carrito.this, "Añade un producto al Carrito", Toast.LENGTH_LONG).show();
+                    onBackPressed();
+                }
 
             }
         });
@@ -135,7 +142,8 @@ public class Carrito extends AppCompatActivity {
                         try {
                             JSONObject object = new JSONObject(response);
                             customerID=object.getString("id");
-                            Toast.makeText(Carrito.this, customerID, Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Customer ID: " + customerID);
+                            //Toast.makeText(Carrito.this, customerID, Toast.LENGTH_LONG).show();
                             getEphericalKey(customerID);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -274,7 +282,8 @@ public class Carrito extends AppCompatActivity {
                         try {
                             JSONObject object = new JSONObject(response);
                             EphericalKey=object.getString("id");
-                            Toast.makeText(Carrito.this, EphericalKey, Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "EphericalKey" + EphericalKey);
+                            //Toast.makeText(Carrito.this, EphericalKey, Toast.LENGTH_LONG).show();
                             getClientSecret(customerID,EphericalKey);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -320,7 +329,7 @@ public class Carrito extends AppCompatActivity {
                             JSONObject object = new JSONObject(response);
                             ClientSecret=object.getString("client_secret");
 
-                            Toast.makeText(Carrito.this, "", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(Carrito.this, "", Toast.LENGTH_LONG).show();
 
 
                         } catch (JSONException e) {

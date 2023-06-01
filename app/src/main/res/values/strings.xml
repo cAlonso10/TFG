@@ -8,6 +8,7 @@
     <string name="sec_postres">Postres</string>
     <string name="Cart">Carrito</string>
     <string name="profile">Perfil</string>
-    <string name="checkout">Carrito</string>
+    <string name="checkout">Añadir al Carrito</string>
     <string name="loading">Cargando...</string>
+    <string name="pay">Pagar</string>
 </resources>

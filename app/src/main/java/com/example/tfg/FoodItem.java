@@ -12,7 +12,7 @@ public class FoodItem implements Parcelable {
     private int quantity = 0;
 
     public FoodItem() {
-        // Default constructor required for calls to DataSnapshot.getValue(FoodItem.class)
+        // Default constructor
     }
 
     public FoodItem(String name, String description, double price) {
