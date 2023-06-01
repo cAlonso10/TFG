@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Cocina">
 
-
+    <item
+        android:id="@+id/done"
+        android:title="Completados"
+        android:icon="@drawable/check"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/usuarios"
         android:title="Usuarios"
         android:icon="@drawable/usuarios"
         app:showAsAction="always"
         />
-    <item
-        android:id="@+id/changeMode"
-        android:title="ChangeMode"
-        android:icon="@drawable/modopedidos"
-        app:showAsAction="always"
-        />
+
     <item
         android:id="@+id/logout"
         android:title="Logout"

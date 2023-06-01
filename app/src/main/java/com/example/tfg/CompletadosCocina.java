@@ -1,5 +1,6 @@
 package com.example.tfg;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -35,7 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PedidosUsuario extends AppCompatActivity {
+public class CompletadosCocina extends AppCompatActivity {
+
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -46,10 +48,15 @@ public class PedidosUsuario extends AppCompatActivity {
     List<String> listaIdPedidos = new ArrayList<>();
     ArrayAdapter<Map<String, Object>> mAdapterPedidos;
 
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pedidosusuario);
+        setContentView(R.layout.activity_cocina);
+
+
+
+
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -60,7 +67,6 @@ public class PedidosUsuario extends AppCompatActivity {
         emailUsuario = mAuth.getCurrentUser().getEmail();
         listViewPedidos = findViewById(R.id.ListView);
 
-        actualizarUI();
 
         listViewPedidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -102,7 +108,7 @@ public class PedidosUsuario extends AppCompatActivity {
                                     }
 
                                     // Mostrar el AlertDialog y su mensaje
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(PedidosUsuario.this);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CompletadosCocina.this);
                                     builder.setTitle("Detalles del Pedido" + (position + 1))
                                             .setMessage(mensaje.toString())
                                             .setPositiveButton("Aceptar", null)
@@ -112,12 +118,15 @@ public class PedidosUsuario extends AppCompatActivity {
                         });
             }
         });
+
+
+actualizarUI();
+
     }
 
     private void actualizarUI() {
         db.collection("pedidos")
-                .whereIn("status", Arrays.asList("En espera", "Cocinando"))
-                .whereEqualTo("email", emailUsuario)
+                .whereIn("status", Arrays.asList("Completado"))
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
@@ -134,7 +143,7 @@ public class PedidosUsuario extends AppCompatActivity {
 
                         for (QueryDocumentSnapshot doc : value) {
                             listaIdPedidos.add(doc.getId());
-                            listaPedidos.add(doc.getString("status"));
+                            listaPedidos.add(doc.getString("estado"));
                             Map<String, Object> pedido = new HashMap<>();
                             //  pedido.put("Producto", doc.getString("Producto"));
                             //pedido.put("Cantidad", doc.getLong("Cantidad"));
@@ -144,16 +153,16 @@ public class PedidosUsuario extends AppCompatActivity {
                         if (listaPedidosMap.size() == 0) {
                             listViewPedidos.setAdapter(null);
                         } else {
-                            mAdapterPedidos = new ArrayAdapter<Map<String, Object>>(PedidosUsuario.this, R.layout.item_pedidousuario, listaPedidosMap) {
+                            mAdapterPedidos = new ArrayAdapter<Map<String, Object>>(CompletadosCocina.this, R.layout.item_pedido, listaPedidosMap) {
                                 @NonNull
                                 @Override
                                 public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                                     if (convertView == null) {
-                                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_pedidousuario, parent, false);
+                                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_pedido, parent, false);
                                     }
-                                    TextView PedidoTextView = convertView.findViewById(R.id.PedidoTextViewUsuario);
+                                    TextView PedidoTextView = convertView.findViewById(R.id.PedidoTextView);
 
-                                    TextView estadoTextView = convertView.findViewById(R.id.EstadoTextViewUsuario);
+                                    TextView estadoTextView = convertView.findViewById(R.id.EstadoTextView);
 
                                     Map<String, Object> pedido = getItem(position);
                                     PedidoTextView.setText("Pedido" + (position + 1));
@@ -173,10 +182,9 @@ public class PedidosUsuario extends AppCompatActivity {
 
 
 
-
     private TextView createCustomTitle() {
         TextView textView = new TextView(this);
-        textView.setText("Pedidos");
+        textView.setText("Pedidos Completados");
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(20);
         textView.setTextColor(Color.BLACK);
@@ -186,4 +194,35 @@ public class PedidosUsuario extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT));
         return textView;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_completadoscocina,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.cocina:
+                Intent intent = new Intent(CompletadosCocina.this, Cocina.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

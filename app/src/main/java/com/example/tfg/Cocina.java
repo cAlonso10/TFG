@@ -45,7 +45,7 @@ public class Cocina extends AppCompatActivity {
     String emailUsuario;
     ListView listViewPedidos;
     List<String> listaPedidos = new ArrayList<>();
-    private boolean listaEnModoCompletados = false;
+
     List<String> listaIdPedidos = new ArrayList<>();
     ArrayAdapter<Map<String, Object>> mAdapterPedidos;
 
@@ -68,7 +68,6 @@ public class Cocina extends AppCompatActivity {
         emailUsuario = mAuth.getCurrentUser().getEmail();
         listViewPedidos = findViewById(R.id.ListView);
 
-        actualizarUIPendientes();
 
         listViewPedidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,17 +84,28 @@ public class Cocina extends AppCompatActivity {
                                     Map<String, Object> pedido = documentSnapshot.getData();
 
                                     // Obtener los datos del pedido
-                                    List<Map<String, Object>> productos = (List<Map<String, Object>>) pedido.get("productos");
-                                    String estado = (String) pedido.get("estado");
+                                    String email = (String) pedido.get("email");
+                                    String status = (String) pedido.get("status");
+                                    double totalPrice = (double) pedido.get("totalPrice");
 
-                                    // Crear el mensaje del AlertDialog c
+                                    List<Map<String, Object>> items = (List<Map<String, Object>>) pedido.get("items");
+
+                                    // Crear el mensaje del AlertDialog
                                     StringBuilder mensaje = new StringBuilder();
-                                    mensaje.append("Estado: ").append(estado).append("\n\n");
+                                    mensaje.append("Email: ").append(email).append("\n");
+                                    mensaje.append("Status: ").append(status).append("\n");
+                                    mensaje.append("Total Price: ").append(totalPrice).append("\n\n");
 
-                                    for (Map<String, Object> producto : productos) {
-                                        String nombre = (String) producto.get("nombre");
-                                        int cantidad = ((Long) producto.get("cantidad")).intValue();
-                                        mensaje.append(nombre).append(": ").append(cantidad).append("\n");
+                                    for (Map<String, Object> item : items) {
+                                        String name = (String) item.get("name");
+                                        int quantity = ((Long) item.get("quantity")).intValue();
+                                        double price = (double) item.get("price");
+                                        double itemTotalPrice = (double) item.get("totalPrice");
+
+                                        mensaje.append("Item: ").append(name).append("\n");
+                                        mensaje.append("Quantity: ").append(quantity).append("\n");
+                                        mensaje.append("Price: ").append(price).append("\n");
+                                        mensaje.append("Item Total Price: ").append(itemTotalPrice).append("\n\n");
                                     }
 
                                     // Mostrar el AlertDialog y su mensaje
@@ -111,12 +121,13 @@ public class Cocina extends AppCompatActivity {
         });
 
 
+        actualizarUI();
 
     }
 
-    private void actualizarUIPendientes() {
+    private void actualizarUI() {
         db.collection("pedidos")
-                .whereIn("estado", Arrays.asList("En espera", "Cocinando"))
+                .whereIn("status", Arrays.asList("En espera", "Cocinando"))
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
@@ -133,11 +144,11 @@ public class Cocina extends AppCompatActivity {
 
                         for (QueryDocumentSnapshot doc : value) {
                             listaIdPedidos.add(doc.getId());
-                            listaPedidos.add(doc.getString("estado"));
+                            listaPedidos.add(doc.getString("status"));
                             Map<String, Object> pedido = new HashMap<>();
                           //  pedido.put("Producto", doc.getString("Producto"));
                             //pedido.put("Cantidad", doc.getLong("Cantidad"));
-                            pedido.put("estado", doc.getString("estado"));
+                            pedido.put("status", doc.getString("status"));
                             listaPedidosMap.add(pedido);
                         }
                         if (listaPedidosMap.size() == 0) {
@@ -156,7 +167,7 @@ public class Cocina extends AppCompatActivity {
 
                                     Map<String, Object> pedido = getItem(position);
                                     PedidoTextView.setText("Pedido" + (position + 1));
-                                    estadoTextView.setText(pedido.get("estado").toString());
+                                    estadoTextView.setText(pedido.get("status").toString());
 
                                     return convertView;
                                 }
@@ -169,65 +180,12 @@ public class Cocina extends AppCompatActivity {
 
     }
 
-    private void actualizarUICompletados() {
-        db.collection("pedidos")
-                .whereIn("estado", Arrays.asList("Completado"))
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            return;
-                        }
 
-                        listaPedidos.clear();
-                        listaIdPedidos.clear();
-                        List<Map<String, Object>> listaPedidosMap = new ArrayList<>();
-
-
-
-                        for (QueryDocumentSnapshot doc : value) {
-                            listaIdPedidos.add(doc.getId());
-                            listaPedidos.add(doc.getString("estado"));
-                            Map<String, Object> pedido = new HashMap<>();
-                            //  pedido.put("Producto", doc.getString("Producto"));
-                            //pedido.put("Cantidad", doc.getLong("Cantidad"));
-                            pedido.put("estado", doc.getString("estado"));
-                            listaPedidosMap.add(pedido);
-                        }
-                        if (listaPedidosMap.size() == 0) {
-                            listViewPedidos.setAdapter(null);
-                        } else {
-                            mAdapterPedidos = new ArrayAdapter<Map<String, Object>>(Cocina.this, R.layout.item_pedido, listaPedidosMap) {
-                                @NonNull
-                                @Override
-                                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                                    if (convertView == null) {
-                                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_pedido, parent, false);
-                                    }
-                                    TextView PedidoTextView = convertView.findViewById(R.id.PedidoTextView);
-
-                                    TextView estadoTextView = convertView.findViewById(R.id.EstadoTextView);
-
-                                    Map<String, Object> pedido = getItem(position);
-                                    PedidoTextView.setText("Pedido" + (position + 1));
-                                    estadoTextView.setText(pedido.get("estado").toString());
-
-                                    return convertView;
-                                }
-                            };
-                            listViewPedidos.setAdapter(mAdapterPedidos);
-                        }
-
-                    }
-                });
-
-    }
 
 
     private TextView createCustomTitle() {
         TextView textView = new TextView(this);
-        textView.setText("Pedidos");
+        textView.setText("Pedidos pendientes");
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(20);
         textView.setTextColor(Color.BLACK);
@@ -246,23 +204,17 @@ public class Cocina extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.logout:
                 logout();
                 return true;
-            case R.id.changeMode:
-                if (listaEnModoCompletados) {
-                    actualizarUIPendientes();
-                    Toast.makeText(Cocina.this, "Mostrando pedidos pendientes", Toast.LENGTH_LONG).show();
-                    listaEnModoCompletados = false;
-                } else {
-                    actualizarUICompletados();
-                    Toast.makeText(Cocina.this, "Mostrando pedidos completados", Toast.LENGTH_LONG).show();
-                    listaEnModoCompletados = true;
-                }
+            case R.id.done:
+                intent = new Intent(Cocina.this, CompletadosCocina.class);
+                startActivity(intent);
                 break;
             case R.id.usuarios:
-                Intent intent = new Intent(Cocina.this, Usuarios.class);
+                intent = new Intent(Cocina.this, Usuarios.class);
                 startActivity(intent);
                 break;
             default:
@@ -289,7 +241,7 @@ public class Cocina extends AppCompatActivity {
         String pedido = estasdoTextView.getText().toString();
         int posicion = listaPedidos.indexOf(pedido);
         if (posicion >= 0) {
-            db.collection("pedidos").document(listaIdPedidos.get(posicion)).update("estado", "Cocinando");
+            db.collection("pedidos").document(listaIdPedidos.get(posicion)).update("status", "Cocinando");
         }
 
     }
@@ -300,12 +252,28 @@ public class Cocina extends AppCompatActivity {
         String pedido = estasdoTextView.getText().toString();
         int posicion = listaPedidos.indexOf(pedido);
         if (posicion >= 0) {
-            db.collection("pedidos").document(listaIdPedidos.get(posicion)).update("estado", "Completado");
+            db.collection("pedidos").document(listaIdPedidos.get(posicion)).update("status", "Completado");
         }
 
     }
 
 
+    public void completarPedido(View view) {
+        // Obtener el ID del pedido seleccionado (puedes usar una variable de instancia para almacenar el ID seleccionado previamente)
+        String pedidoId = "2023060105394310";
+
+        // Actualizar el estado del pedido a "Completado" en Firebase Firestore
+        db.collection("pedidos")
+                .document(pedidoId)
+                .update("status", "Completado")
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(Cocina.this, "Pedido completado", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
 
 }
 

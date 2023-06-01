@@ -62,7 +62,6 @@ public class Carrito extends AppCompatActivity {
     String customerID;
     String EphericalKey;
     String ClientSecret;
-    String orderId;
     Pedido pedido;
 
     @Override
@@ -107,14 +106,11 @@ public class Carrito extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Create an order
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-                String timestamp = dateFormat.format(new Date());
-                orderId = timestamp + String.format("%02d", new Random().nextInt(100));
-                String status = "CREADO";
+                String status = "En espera";
                 List<CartItem> items = mCartItems;
                 double totalPrice = mTotalPrice;
 
-                pedido = new Pedido(orderId,emailUsuario, status, items, totalPrice);
+                pedido = new Pedido(emailUsuario, status, items, totalPrice);
                 // Start the payment activity:
                 PaymentFlow();
 
@@ -257,10 +253,10 @@ public class Carrito extends AppCompatActivity {
         if(paymentSheetResult instanceof PaymentSheetResult.Completed) {
             Toast.makeText(this, "payment success" , Toast.LENGTH_SHORT).show();
             //Send order to Firestore
-            DocumentReference docRef = db.collection("pedidos").document(orderId);
+            DocumentReference docRef = db.collection("pedidos").document();
             docRef.set(pedido);
             //Clear cart and go to Orders
-            mCartItems.clear();
+            //mCartItems.clear();
             Intent intent = new Intent(Carrito.this, PedidosUsuario.class);
             startActivity(intent);
         }

@@ -50,6 +50,10 @@
             android:exported="true"
             android:theme="@style/Theme.TFG"></activity>
         <activity
+            android:name=".CompletadosCocina"
+            android:exported="true"
+            android:theme="@style/Theme.TFG"></activity>
+        <activity
             android:name=".Splash"
             android:exported="true" >
             <intent-filter>

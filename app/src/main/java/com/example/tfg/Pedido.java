@@ -3,27 +3,20 @@ package com.example.tfg;
 import java.util.List;
 
 public class Pedido {
-    private long orderId;
+
     private String email;
     private String status;
     private List<CartItem> items;
     private double totalPrice;
 
-    public Pedido(String orderId, String email, String status, List<CartItem> items, double totalPrice) {
-        this.orderId = Long.parseLong(orderId);
+    public Pedido(String email, String status, List<CartItem> items, double totalPrice) {
         this.email = email;
         this.status = status;
         this.items = items;
         this.totalPrice = totalPrice;
     }
 
-    public long getOrderId() {
-        return orderId;
-    }
 
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
-    }
 
     public String getEmail() {
         return email;
