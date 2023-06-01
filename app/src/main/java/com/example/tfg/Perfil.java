@@ -39,8 +39,10 @@ public class Perfil extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    String emailUsuario,nombre,telefono;
+    String emailUsuario,nombre,telefono,direccion;
+
     Button buttonCambiarTelefono,buttonCambiarDireccion;
+    boolean datosCompletos = false;
 
     TextView textViewNombre,textViewEmail,textViewTelefono,textViewDireccion;
     @Override
@@ -94,8 +96,8 @@ public class Perfil extends AppCompatActivity {
                             QuerySnapshot querySnapshot = task.getResult();
                             if (querySnapshot != null && !querySnapshot.isEmpty()) {
                                 DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
-                                String telefono = documentSnapshot.getString("telefono");
-                                String direccion = documentSnapshot.getString("direccion");
+                                telefono = documentSnapshot.getString("telefono");
+                                direccion = documentSnapshot.getString("direccion");
 
 
                                 textViewTelefono.setText("Teléfono: " + telefono);
@@ -110,6 +112,7 @@ public class Perfil extends AppCompatActivity {
                             textViewTelefono.setText("Teléfono: Error");
                             textViewDireccion.setText("Dirección: Error");
                         }
+
                     }
                 });
     }
@@ -190,6 +193,7 @@ public class Perfil extends AppCompatActivity {
                         } else {
                             Toast.makeText(Perfil.this, "Error al buscar el documento", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
     }
@@ -267,6 +271,7 @@ public class Perfil extends AppCompatActivity {
                         } else {
                             Toast.makeText(Perfil.this, "Error al buscar el documento", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
     }

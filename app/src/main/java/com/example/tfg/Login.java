@@ -97,6 +97,7 @@ public class Login extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
             }
@@ -143,6 +144,7 @@ public class Login extends AppCompatActivity {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_LONG).show();
                             }
+
                         }
                     });
                 }
@@ -205,6 +207,7 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_LONG).show();
                             updateUI(null);
                         }
+
                     }
                 });
     }

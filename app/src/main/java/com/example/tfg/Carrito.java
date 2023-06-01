@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,9 +25,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.paymentsheet.PaymentSheet;
 import com.stripe.android.paymentsheet.PaymentSheetResult;
@@ -53,7 +58,7 @@ public class Carrito extends AppCompatActivity {
     String emailUsuario;
     private ArrayList<FoodItem> mSelectedItems;
     private ArrayList<FoodItem> mCurrentSelectedItems;
-    Button paymentButton;
+    Button paymentButtonCard,paymentButtonShop;
     String SECRET_KEY="sk_test_51NDlLEKickMEKTkfPlbRqIJ74L9WluDjvPobpMwJyFWOahsDNQNqncfyzcgmzFjjodJO6da8y5xy56bWfWvwwd4h00chndM3pP";
     String PUBLISH_KEY="pk_test_51NDlLEKickMEKTkfmGCihEmv1Dpfc91vh7Il5dORzzxaPQnw9ir5WOMtR1tpJ3pxe5c2yDNKI6O86esdg8EYAWDW00Dv8xwo36";
     PaymentSheet paymentSheet;
@@ -73,7 +78,8 @@ public class Carrito extends AppCompatActivity {
         TextView totalTextView = findViewById(R.id.text_view_total);
         mSelectedItems = new ArrayList<>();
         mCurrentSelectedItems = new ArrayList<>();
-        paymentButton = findViewById(R.id.button_payment);
+        paymentButtonCard = findViewById(R.id.button_paymentCard);
+        paymentButtonShop = findViewById(R.id.button_paymentShop);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         emailUsuario = mAuth.getCurrentUser().getEmail();
@@ -100,7 +106,7 @@ public class Carrito extends AppCompatActivity {
         mAdapter = new CartItemAdapter(this, mCartItems);
         mCartList.setAdapter(mAdapter);
 
-        paymentButton.setOnClickListener(new View.OnClickListener() {
+        paymentButtonCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mTotalPrice > 0){
@@ -130,8 +136,65 @@ public class Carrito extends AppCompatActivity {
             onPaymentResult(paymentSheetResult);
         });
 
+        paymentButtonShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Consulta Firestore para verificar si hay un pedido en espera con el mismo email
+                Query query = db.collection("pedidos")
+                        .whereEqualTo("email", emailUsuario)
+                        .whereEqualTo("status", "En espera");
+
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot snapshot = task.getResult();
+                            if (snapshot != null && !snapshot.isEmpty()) {
+                                // Hay al menos un pedido en espera con el mismo email
+                                Toast.makeText(Carrito.this, "Ya tienes un pedido pendiente", Toast.LENGTH_SHORT).show();
+                            } else {
+                                if (mTotalPrice > 0) {
+                                    // Create an order
+                                    String status = "En espera";
+                                    List<CartItem> items = mCartItems;
+                                    double totalPrice = mTotalPrice;
 
 
+                                    pedido = new Pedido(emailUsuario, status, items, totalPrice);
+                                    Toast.makeText(Carrito.this, "Pedido creado", Toast.LENGTH_SHORT).show();
+                                    DocumentReference docRef = db.collection("pedidos").document();
+                                    docRef.set(pedido);
+                                    Intent intent = new Intent(Carrito.this, PedidosUsuario.class);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(Carrito.this, "Añade un producto al Carrito", Toast.LENGTH_LONG).show();
+                                    onBackPressed();
+                                }
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
+
+/*
+
+ private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
+
+        if(paymentSheetResult instanceof PaymentSheetResult.Completed) {
+            Toast.makeText(this, "payment success" , Toast.LENGTH_SHORT).show();
+            //Send order to Firestore
+            DocumentReference docRef = db.collection("pedidos").document();
+            docRef.set(pedido);
+            //Clear cart and go to Orders
+            //mCartItems.clear();
+            Intent intent = new Intent(Carrito.this, PedidosUsuario.class);
+            startActivity(intent);
+        }
+
+    }
+ */
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 "https://api.stripe.com/v1/customers",

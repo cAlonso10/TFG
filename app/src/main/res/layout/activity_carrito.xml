@@ -23,9 +23,15 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/button_payment"
+        android:id="@+id/button_paymentShop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pay" />
+        android:text="Pagar en tienda" />
+
+    <Button
+        android:id="@+id/button_paymentCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pagar con tarjeta" />
 
 </LinearLayout>

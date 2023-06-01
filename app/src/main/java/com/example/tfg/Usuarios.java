@@ -79,6 +79,7 @@ public class Usuarios extends AppCompatActivity {
                             textViewTelefono.setText("Teléfono:");
                             textViewDireccion.setText("Dirección:");
                         }
+
                     }
                 });
     }

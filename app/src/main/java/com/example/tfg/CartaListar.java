@@ -5,6 +5,7 @@ import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,14 +16,19 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -226,19 +232,51 @@ public class CartaListar extends AppCompatActivity {
             }
 
 
-            Button checkoutButton = findViewById(R.id.checkout_button);
-            checkoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                    /*ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
-                    Intent intent = new Intent(CartaListar.this, Carrito.class);
-                    intent.putParcelableArrayListExtra("selectedItems", selectedItems);
-                    Log.d(TAG, "Selected items: " + selectedItems.toString());
-                    startActivity(intent);*/
-                }
-            });
-        }
+        Button checkoutButton = findViewById(R.id.checkout_button);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("usuarios")
+                        .whereEqualTo("emailUsuario", emailUsuario)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    if (!querySnapshot.isEmpty()) {
+                                        DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                        if (document.contains("direccion") && document.contains("telefono")) {
+                                            String direccion = document.getString("direccion");
+                                            String telefono = document.getString("telefono");
+                                            if (!TextUtils.isEmpty(direccion) && !TextUtils.isEmpty(telefono)) {
+                                                onBackPressed();
+                                            } else {
+                                                Toast.makeText(CartaListar.this, "Complete su información", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(CartaListar.this, Perfil.class);
+                                                startActivity(intent);
+                                            }
+                                        } else {
+                                            Toast.makeText(CartaListar.this, "Complete su información", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(CartaListar.this, Perfil.class);
+                                            startActivity(intent);
+                                        }
+                                    } else {
+                                        Toast.makeText(CartaListar.this, "Complete su información", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(CartaListar.this, Perfil.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
+                        });
+            }
+        });
+
+
+
+
+    }
         public static class FoodItemAdapter extends BaseAdapter {
             private Context mContext;
             private List<FoodItem> mFoodItems;
