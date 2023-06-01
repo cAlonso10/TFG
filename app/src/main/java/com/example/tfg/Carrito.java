@@ -114,7 +114,7 @@ public class Carrito extends AppCompatActivity {
                 List<CartItem> items = mCartItems;
                 double totalPrice = mTotalPrice;
 
-                pedido = new Pedido(orderId, status, items, totalPrice);
+                pedido = new Pedido(orderId,emailUsuario, status, items, totalPrice);
                 // Start the payment activity:
                 PaymentFlow();
 
@@ -256,11 +256,12 @@ public class Carrito extends AppCompatActivity {
 
         if(paymentSheetResult instanceof PaymentSheetResult.Completed) {
             Toast.makeText(this, "payment success" , Toast.LENGTH_SHORT).show();
+            //Send order to Firestore
             DocumentReference docRef = db.collection("pedidos").document(orderId);
             docRef.set(pedido);
-            //Clear cart and go back to Carta
-            //mCartItems.clear();
-            Intent intent = new Intent(Carrito.this, Carta.class);
+            //Clear cart and go to Orders
+            mCartItems.clear();
+            Intent intent = new Intent(Carrito.this, PedidosUsuario.class);
             startActivity(intent);
         }
 
@@ -364,7 +365,7 @@ public class Carrito extends AppCompatActivity {
     private void PaymentFlow() {
 
         paymentSheet.presentWithPaymentIntent(
-                ClientSecret,new PaymentSheet.Configuration("ABC Company"
+                ClientSecret,new PaymentSheet.Configuration("RestoApp"
                         ,new PaymentSheet.CustomerConfiguration(
                         customerID,
                         EphericalKey

@@ -4,12 +4,14 @@ import java.util.List;
 
 public class Pedido {
     private long orderId;
+    private String email;
     private String status;
     private List<CartItem> items;
     private double totalPrice;
 
-    public Pedido(String orderId, String status, List<CartItem> items, double totalPrice) {
+    public Pedido(String orderId, String email, String status, List<CartItem> items, double totalPrice) {
         this.orderId = Long.parseLong(orderId);
+        this.email = email;
         this.status = status;
         this.items = items;
         this.totalPrice = totalPrice;
@@ -21,6 +23,14 @@ public class Pedido {
 
     public void setOrderId(long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getStatus() {
