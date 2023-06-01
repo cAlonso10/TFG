@@ -2,53 +2,30 @@ package com.example.tfg;
 
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class CartaListar extends AppCompatActivity {
         ListView mFoodList;
@@ -66,6 +43,11 @@ public class CartaListar extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.menu_carta, menu);
             return true;
         }
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.action_cart);
+        menuItem.setVisible(false);
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_cart) {
@@ -248,31 +230,12 @@ public class CartaListar extends AppCompatActivity {
             checkoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
+                    onBackPressed();
+                    /*ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
                     Intent intent = new Intent(CartaListar.this, Carrito.class);
                     intent.putParcelableArrayListExtra("selectedItems", selectedItems);
                     Log.d(TAG, "Selected items: " + selectedItems.toString());
-                    startActivity(intent);
-                    /*FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    ArrayList<FoodItem> selectedItems = mAdapter.getSelectedItems();
-                    Log.d(TAG, "Selected items: " + selectedItems.toString());
-                    List<Map<String, Object>> products = new ArrayList<>();
-                    for (FoodItem selectedItem : selectedItems) {
-                        if (selectedItem.getQuantity() > 0) {
-                            Map<String, Object> product = new HashMap<>();
-                            product.put("nombre", selectedItem.getName());
-                            product.put("cantidad", selectedItem.getQuantity());
-                            products.add(product);
-
-                        }
-                    }
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("productos", products);
-                    data.put("estado", "En espera");
-                    data.put("emailUsuario", emailUsuario);
-                    data.put("fecha", Timestamp.now());
-                    db.collection("pedidos").add(data);
-                    selectedItems.clear();*/
+                    startActivity(intent);*/
                 }
             });
         }
