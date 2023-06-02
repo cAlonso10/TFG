@@ -164,7 +164,7 @@ public class Carta extends AppCompatActivity {
     }
 
     private void logout() {
-        List<String> emailsMesas = Arrays.asList("restaurante1@mesa.com", "restaurante2@mesa.com", "restaurante3@mesa.com");
+        List<String> emailsMesas = Arrays.asList("mesa1@restaurante.com", "mesa2@restaurante.com", "mesa3@restaurante.com");
         if (emailsMesas.contains(emailUsuario)){
             showPasswordDialog();
         } else {
