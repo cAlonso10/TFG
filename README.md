@@ -1,12 +1,14 @@
 
 
 <h2>Trabajo Fin de Grado</h2>
-[Enlace a la Memoria](https://docs.google.com/document/d/1_9rDg1UyBEAP_avnsvsFDRjZ6dFbfLceXkFwvEo8pTs/edit?usp=sharing)
 
-Desarrollo de Aplicaciones Multiplataforma 
+
+Desarrollo de Aplicaciones Multiplataforma \
 EDIX 2022/2023
 
-<h1> 
+[Enlace a la Memoria](https://docs.google.com/document/d/1_9rDg1UyBEAP_avnsvsFDRjZ6dFbfLceXkFwvEo8pTs/edit?usp=sharing) 
+
+<h1>
 RestoApp</h1>
 
 
