@@ -41,7 +41,7 @@ public class Perfil extends AppCompatActivity {
     private FirebaseFirestore db;
     String emailUsuario,nombre,telefono,direccion;
 
-    Button buttonCambiarTelefono,buttonCambiarDireccion;
+    Button buttonCambiarTelefono,buttonCambiarDireccion,buttonCambiarNombre;
     boolean datosCompletos = false;
 
     TextView textViewNombre,textViewEmail,textViewTelefono,textViewDireccion;
@@ -74,6 +74,14 @@ public class Perfil extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cambiarDireccion();
+            }
+        });
+
+        buttonCambiarDireccion = findViewById(R.id.cambiarNombre);
+        buttonCambiarDireccion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cambiarNombre();
             }
         });
 
@@ -276,5 +284,81 @@ public class Perfil extends AppCompatActivity {
                 });
     }
 
+    private void cambiarNombre() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Cambiar nombre");
+        final EditText editTextNombre = new EditText(this);
+        editTextNombre.setHint("Ingrese el nuevo nombre");
+        builder.setView(editTextNombre);
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final String nuevoNombre = editTextNombre.getText().toString();
+                cambiarNombreUsuario(nuevoNombre);
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void cambiarNombreUsuario(final String nuevoNombre) {
+        db = FirebaseFirestore.getInstance();
+        db.collection("usuarios")
+                .whereEqualTo("emailUsuario", emailUsuario)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                DocumentReference documentReference = querySnapshot.getDocuments().get(0).getReference();
+                                documentReference.update("nombre", nuevoNombre)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(Perfil.this, "Nombre actualizado correctamente", Toast.LENGTH_SHORT).show();
+                                                // Actualizar la UI después de cambiar el nombre
+                                                nombre = nuevoNombre;
+                                                textViewNombre.setText("Nombre: " + nombre);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(Perfil.this, "Error al actualizar el nombre", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            } else {
+                                Map<String, Object> usuario = new HashMap<>();
+                                usuario.put("emailUsuario", emailUsuario);
+                                usuario.put("nombre", nuevoNombre);
+                                usuario.put("telefono", "No hay datos");
+                                usuario.put("direccion", "No hay datos");
+                                db.collection("usuarios")
+                                        .add(usuario)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Toast.makeText(Perfil.this, "Documento creado correctamente", Toast.LENGTH_SHORT).show();
+                                                actualizarUI();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(Perfil.this, "Error al crear el documento", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+    }
 
 }

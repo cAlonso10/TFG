@@ -46,6 +46,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/cambiarNombre"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:text="Actualizar nombre"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
         android:id="@+id/cambiarTelefono"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
