@@ -1,5 +1,6 @@
 package com.example.tfg;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -112,6 +113,11 @@ public class PedidosUsuario extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(PedidosUsuario.this, Carta.class);
+        startActivity(backIntent);
+    }
     private void actualizarUI() {
         db.collection("pedidos")
                 .whereIn("status", Arrays.asList("En espera", "Cocinando"))

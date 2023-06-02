@@ -158,6 +158,10 @@ public class Carrito extends AppCompatActivity {
                                     Toast.makeText(Carrito.this, "Pedido creado", Toast.LENGTH_SHORT).show();
                                     DocumentReference docRef = db.collection("pedidos").document();
                                     docRef.set(pedido);
+                                    mCartItems.clear();
+                                    mSelectedItems.clear();
+                                    mAdapter.notifyDataSetChanged();
+                                    finish();
                                     Intent intent = new Intent(Carrito.this, PedidosUsuario.class);
                                     startActivity(intent);
                                 } else {
@@ -320,7 +324,10 @@ public class Carrito extends AppCompatActivity {
             DocumentReference docRef = db.collection("pedidos").document();
             docRef.set(pedido);
             //Clear cart and go to Orders
-            //mCartItems.clear();
+            mCartItems.clear();
+            mSelectedItems.clear();
+            mAdapter.notifyDataSetChanged();
+            finish();
             Intent intent = new Intent(Carrito.this, PedidosUsuario.class);
             startActivity(intent);
         }

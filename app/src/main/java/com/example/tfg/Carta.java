@@ -43,14 +43,11 @@ public class Carta extends AppCompatActivity {
                     if (data != null) {
                         ArrayList<FoodItem> updatedSelectedItems = data.getParcelableArrayListExtra("selectedItems");
                         if (updatedSelectedItems != null) {
-                            // Add the updated selected items to the existing selected items
+                            // Checks if there are already any selected items
                             if (selectedItems == null) {
                                 selectedItems = new ArrayList<>();
                             }
                             selectedItems.addAll(updatedSelectedItems);
-
-                            // Handle the selected items as needed or store them for later use
-                            // ...
                         }
                     }
                 }
