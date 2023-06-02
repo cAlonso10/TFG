@@ -153,16 +153,16 @@ actualizarUI();
                         if (listaPedidosMap.size() == 0) {
                             listViewPedidos.setAdapter(null);
                         } else {
-                            mAdapterPedidos = new ArrayAdapter<Map<String, Object>>(CompletadosCocina.this, R.layout.item_pedido, listaPedidosMap) {
+                            mAdapterPedidos = new ArrayAdapter<Map<String, Object>>(CompletadosCocina.this, R.layout.activity_completadoscocina, listaPedidosMap) {
                                 @NonNull
                                 @Override
                                 public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                                     if (convertView == null) {
-                                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_pedido, parent, false);
+                                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_completadoscocina, parent, false);
                                     }
-                                    TextView PedidoTextView = convertView.findViewById(R.id.PedidoTextView);
+                                    TextView PedidoTextView = convertView.findViewById(R.id.PedidoTextViewCompletado);
 
-                                    TextView estadoTextView = convertView.findViewById(R.id.EstadoTextView);
+                                    TextView estadoTextView = convertView.findViewById(R.id.EstadoTextViewCompletado);
 
                                     Map<String, Object> pedido = getItem(position);
                                     PedidoTextView.setText("Pedido" + (position + 1));

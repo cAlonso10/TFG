@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/PedidoTextView"
+        android:id="@+id/PedidoTextViewCompletado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
@@ -19,7 +19,7 @@
 
 
     <TextView
-        android:id="@+id/EstadoTextViewUsuario"
+        android:id="@+id/EstadoTextViewCompletado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
