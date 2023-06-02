@@ -42,7 +42,7 @@ public class CartaListar extends AppCompatActivity {
         private FirebaseAuth mAuth;
         String emailUsuario;
         private String CategoryName;
-
+        ListenerRegistration listenerRegistration;
         TextView loadingText;
 
         public boolean onCreateOptionsMenu(Menu menu) {
@@ -53,16 +53,6 @@ public class CartaListar extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.action_cart);
         menuItem.setVisible(false);
         return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_cart) {
-            Intent intent = new Intent(CartaListar.this, Carrito.class);
-            intent.putParcelableArrayListExtra("selectedItems", mAdapter.getSelectedItems());
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
     @Override
     public void onBackPressed() {
@@ -91,14 +81,14 @@ public class CartaListar extends AppCompatActivity {
             CategoryName = getIntent().getExtras().get("categoría").toString();
             String capCategoryName = CategoryName.substring(0, 1).toUpperCase() + CategoryName.substring(1);
             getSupportActionBar().setTitle(capCategoryName);
-
+            // Load Food items
             CollectionReference foodItemsRef = db.collection("comida").document(CategoryName).collection("foodItems");
-            ListenerRegistration listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
+            listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
                 if (error != null) {
-                    // Handle errors
+                    Toast.makeText(CartaListar.this, "Error al cargar la carta", Toast.LENGTH_LONG).show();
                     return;
                 }
-                mFoodItems.clear(); // Clear the existing food items
+
                 if (value != null && !value.isEmpty()) {
                     for (DocumentSnapshot document : value.getDocuments()) {
                         FoodItem foodItem = document.toObject(FoodItem.class);
@@ -107,130 +97,10 @@ public class CartaListar extends AppCompatActivity {
 
                         }
                     }
+                    mAdapter.notifyDataSetChanged();
+                    loadingText.setVisibility(View.GONE);
                 }
             });
-
-            mAdapter.notifyDataSetChanged();
-            loadingText.setVisibility(View.GONE);
-
-            // Handle other category names
-            if (CategoryName.equals("entrantes")) {
-                foodItemsRef = db.collection("comida").document("entrantes").collection("foodItems");
-                listenerRegistration.remove(); // Remove the previous listener
-                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle errors
-                        return;
-                    }
-                    mFoodItems.clear(); // Clear the existing food items
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot document : value.getDocuments()) {
-                            FoodItem foodItem = document.toObject(FoodItem.class);
-                            if (foodItem != null) {
-                                mFoodItems.add(foodItem);
-
-                            }
-                        }
-                    }
-                });
-            }else if (CategoryName.equals("bebidas")) {
-                foodItemsRef = db.collection("comida").document("bebidas").collection("foodItems");
-                listenerRegistration.remove(); // Remove the previous listener
-                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle errors
-                        return;
-                    }
-                    mFoodItems.clear(); // Clear the existing food items
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot document : value.getDocuments()) {
-                            FoodItem foodItem = document.toObject(FoodItem.class);
-                            if (foodItem != null) {
-                                mFoodItems.add(foodItem);
-
-                            }
-                        }
-                    }
-                });
-            } else if (CategoryName.equals("pasta")) {
-
-                foodItemsRef = db.collection("comida").document("pasta").collection("foodItems");
-                listenerRegistration.remove(); // Remove the previous listener
-                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle errors
-                        return;
-                    }
-                    mFoodItems.clear(); // Clear the existing food items
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot document : value.getDocuments()) {
-                            FoodItem foodItem = document.toObject(FoodItem.class);
-                            if (foodItem != null) {
-                                mFoodItems.add(foodItem);
-
-                            }
-                        }
-                    }
-                });
-            } else if (CategoryName.equals("pizza")) {
-                foodItemsRef = db.collection("comida").document("pizza").collection("foodItems");
-                listenerRegistration.remove(); // Remove the previous listener
-                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle errors
-                        return;
-                    }
-                    mFoodItems.clear(); // Clear the existing food items
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot document : value.getDocuments()) {
-                            FoodItem foodItem = document.toObject(FoodItem.class);
-                            if (foodItem != null) {
-                                mFoodItems.add(foodItem);
-
-                            }
-                        }
-                    }
-                });
-            } else if (CategoryName.equals("postres")) {
-                foodItemsRef = db.collection("comida").document("postres").collection("foodItems");
-                listenerRegistration.remove(); // Remove the previous listener
-                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle errors
-                        return;
-                    }
-                    mFoodItems.clear(); // Clear the existing food items
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot document : value.getDocuments()) {
-                            FoodItem foodItem = document.toObject(FoodItem.class);
-                            if (foodItem != null) {
-                                mFoodItems.add(foodItem);
-
-                            }
-                        }
-                    }
-                });
-            } else if (CategoryName.equals("principales")) {
-                foodItemsRef = db.collection("comida").document("principales").collection("foodItems");
-                listenerRegistration.remove(); // Remove the previous listener
-                listenerRegistration = foodItemsRef.addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle errors
-                        return;
-                    }
-                    mFoodItems.clear(); // Clear the existing food items
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot document : value.getDocuments()) {
-                            FoodItem foodItem = document.toObject(FoodItem.class);
-                            if (foodItem != null) {
-                                mFoodItems.add(foodItem);
-
-                            }
-                        }
-                    }
-                });
-            }
-
 
         Button checkoutButton = findViewById(R.id.checkout_button);
         checkoutButton.setOnClickListener(new View.OnClickListener() {

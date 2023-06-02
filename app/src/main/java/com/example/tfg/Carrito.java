@@ -57,7 +57,6 @@ public class Carrito extends AppCompatActivity {
     FirebaseFirestore db;
     String emailUsuario;
     private ArrayList<FoodItem> mSelectedItems;
-    private ArrayList<FoodItem> mCurrentSelectedItems;
     Button paymentButtonCard,paymentButtonShop;
     String SECRET_KEY="sk_test_51NDlLEKickMEKTkfPlbRqIJ74L9WluDjvPobpMwJyFWOahsDNQNqncfyzcgmzFjjodJO6da8y5xy56bWfWvwwd4h00chndM3pP";
     String PUBLISH_KEY="pk_test_51NDlLEKickMEKTkfmGCihEmv1Dpfc91vh7Il5dORzzxaPQnw9ir5WOMtR1tpJ3pxe5c2yDNKI6O86esdg8EYAWDW00Dv8xwo36";
@@ -77,7 +76,6 @@ public class Carrito extends AppCompatActivity {
         mCartList = findViewById(R.id.list_view_carrito);
         TextView totalTextView = findViewById(R.id.text_view_total);
         mSelectedItems = new ArrayList<>();
-        mCurrentSelectedItems = new ArrayList<>();
         paymentButtonCard = findViewById(R.id.button_paymentCard);
         paymentButtonShop = findViewById(R.id.button_paymentShop);
         db = FirebaseFirestore.getInstance();
@@ -114,12 +112,8 @@ public class Carrito extends AppCompatActivity {
                 String status = "En espera";
                 List<CartItem> items = mCartItems;
                 double totalPrice = mTotalPrice;
-
-
-                pedido = new Pedido(emailUsuario, status, items, totalPrice);
-
                 //Create an Order
-
+                pedido = new Pedido(emailUsuario, status, items, totalPrice);
                 // Start the payment activity:
                 PaymentFlow();
                 }else{
@@ -242,7 +236,6 @@ public class Carrito extends AppCompatActivity {
     public class CartItemAdapter extends BaseAdapter {
         private Carrito mContext;
         private List<CartItem> mCartItems;
-        private List<FoodItem> mSelectedCartItems = new ArrayList<>();
         TextView totalTextView = findViewById(R.id.text_view_total);
 
         public CartItemAdapter(Carrito context, List<CartItem> cartItems) {
