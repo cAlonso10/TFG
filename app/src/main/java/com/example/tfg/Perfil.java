@@ -106,19 +106,23 @@ public class Perfil extends AppCompatActivity {
                                 DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
                                 telefono = documentSnapshot.getString("telefono");
                                 direccion = documentSnapshot.getString("direccion");
+                                nombre = documentSnapshot.getString("nombre");
 
 
                                 textViewTelefono.setText("Teléfono: " + telefono);
                                 textViewDireccion.setText("Dirección: " + direccion);
+                                textViewNombre.setText("Nombre: " + nombre);
                             } else {
 
                                 textViewTelefono.setText("Teléfono: No hay datos");
                                 textViewDireccion.setText("Dirección: No hay datos");
+                                textViewNombre.setText("Nombre: No hay datos");
                             }
                         } else {
 
                             textViewTelefono.setText("Teléfono: Error");
                             textViewDireccion.setText("Dirección: Error");
+                            textViewNombre.setText("Nombre: Error");
                         }
 
                     }
